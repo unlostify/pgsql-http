@@ -1105,7 +1105,7 @@ Datum http_request(PG_FUNCTION_ARGS)
 		content_text = DatumGetTextP(values[REQ_CONTENT]);
 		content_size = VARSIZE(content_text) - VARHDRSZ;
 
-		if ( method == HTTP_GET || method == HTTP_POST )
+		if ( method == HTTP_GET || method == HTTP_POST  || method == HTTP_DELETE)
 		{
 			/* Add the content to the payload */
 			CURL_SETOPT(g_http_handle, CURLOPT_POST, 1);
@@ -1113,6 +1113,10 @@ Datum http_request(PG_FUNCTION_ARGS)
 			{
 				/* Force the verb to be GET */
 				CURL_SETOPT(g_http_handle, CURLOPT_CUSTOMREQUEST, "GET");
+			}
+			else if ( method == HTTP_DELETE )
+			{
+				CURL_SETOPT(g_http_handle, CURLOPT_CUSTOMREQUEST, "DELETE");
 			}
 			CURL_SETOPT(g_http_handle, CURLOPT_POSTFIELDS, text_to_cstring(content_text));
 		}
